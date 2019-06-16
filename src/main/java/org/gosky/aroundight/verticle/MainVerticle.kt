@@ -49,7 +49,7 @@ class MainVerticle : RestVerticle() {
         val money = context.bodyAsJson.getString("money")
 
         orderService.createOrder(money.toBigDecimal())
-                .subscribe { t: String? ->
+                .subscribe { t ->
                     context.success(t)
                 }
 

@@ -1,6 +1,7 @@
 package org.gosky.aroundight.ext
 
 import com.google.gson.Gson
+import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.RoutingContext
 
 /**
@@ -11,9 +12,15 @@ import io.vertx.ext.web.RoutingContext
 
 
 fun RoutingContext.success(any: Any?) {
+    var toJson: String
+    if (any is JsonObject) {
+        toJson = any.toString()
+    } else {
+        toJson = Gson().toJson(any)
+    }
     this.response()
             .putHeader("content-type", "application/json")
-            .end(Gson().toJson(any))
+            .end(toJson)
 }
 
 fun RoutingContext.error(any: Any?) {

@@ -29,7 +29,7 @@ class OrderService {
     @Autowired
     private lateinit var mongo: MongoClient
 
-    fun createOrder(money: BigDecimal): Single<String> {
+    fun createOrder(money: BigDecimal): Single<JsonObject> {
 
         //生成订单号
         val orderSn = UUID.randomUUID().toString()
@@ -63,7 +63,10 @@ class OrderService {
                             .put("status", OrderStatus.CREATED)
                             .put("createTime", currentTimeMillis)
                             .put("updateTime", currentTimeMillis)
-                    return@flatMap mongo.rxSave("order", document).toSingle()
+                            .put("expireTime", currentTimeMillis + 5 * 60 * 1000)
+                    return@flatMap mongo.rxSave("order", document).toSingle().map {
+                        document.put("_id", it)
+                    }
                 }
 
         return single
@@ -98,7 +101,6 @@ class OrderService {
                     return@map it;
                 }
     }
-
 
 
 }
