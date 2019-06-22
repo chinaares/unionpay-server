@@ -3,7 +3,6 @@ package org.gosky.aroundight.verticle
 import io.vertx.ext.web.RoutingContext
 import io.vertx.reactivex.ext.mongo.MongoClient
 import mu.KotlinLogging
-import org.gosky.aroundight.ext.error
 import org.gosky.aroundight.ext.success
 import org.gosky.aroundight.service.OrderService
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,11 +33,6 @@ class MainVerticle : RestVerticle() {
         router.get("/order-list").handler { getOrderList(it) }
 
         router.put("/order/paid").handler { orderStatusPaid(it) }
-
-        router.errorHandler(500) { routerContext ->
-            logger.error { routerContext.failure().message }
-            routerContext.error("error" to routerContext.failure().message)
-        }
     }
 
     /**

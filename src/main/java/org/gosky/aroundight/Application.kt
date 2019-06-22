@@ -2,6 +2,7 @@ package org.gosky.aroundight
 
 import io.vertx.reactivex.core.Vertx
 import org.gosky.aroundight.verticle.MainVerticle
+import org.gosky.aroundight.verticle.UserVerticle
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -17,10 +18,13 @@ class Application {
 
     @Autowired
     private lateinit var apiVerticle: MainVerticle
+    @Autowired
+    private lateinit var userVerticle: UserVerticle
 
     @PostConstruct
     fun deployVerticle() {
         vertx.deployVerticle(apiVerticle)
+        vertx.deployVerticle(userVerticle)
     }
 
     @Bean
