@@ -1,13 +1,17 @@
 package org.gosky.aroundight.verticle
 
-import io.vertx.core.AbstractVerticle
 import io.vertx.core.http.HttpMethod
-import io.vertx.ext.web.Router
-import io.vertx.ext.web.handler.BodyHandler
-import io.vertx.ext.web.handler.CorsHandler
+import io.vertx.reactivex.core.AbstractVerticle
+import io.vertx.reactivex.ext.auth.jwt.JWTAuth
+import io.vertx.reactivex.ext.web.Router
+import io.vertx.reactivex.ext.web.handler.BodyHandler
+import io.vertx.reactivex.ext.web.handler.CorsHandler
+import io.vertx.reactivex.ext.web.handler.JWTAuthHandler
 import mu.KotlinLogging
 import org.gosky.aroundight.ext.error
-import java.util.*
+import org.gosky.aroundight.ext.success
+import org.springframework.beans.factory.annotation.Autowired
+
 
 /**
  * @Auther: guozhong
@@ -17,9 +21,13 @@ import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
+
 abstract class RestVerticle : AbstractVerticle() {
+
     protected lateinit var router: Router
 
+    @Autowired
+    private lateinit var jwtAuth: JWTAuth
 
     @Throws(Exception::class)
     override fun start() {
@@ -52,13 +60,19 @@ abstract class RestVerticle : AbstractVerticle() {
         router.route().handler(CorsHandler.create("*").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods))
         router.route().handler(BodyHandler.create()) // <3>
 
-        initRouter()
-
-        vertx.createHttpServer().requestHandler(router).listen(8080)
         router.errorHandler(500) { routerContext ->
             logger.error { routerContext.failure().message }
             routerContext.error("error" to routerContext.failure().message)
         }
+
+
+        router.get("/health").handler { it.success("ok!") }
+
+        router.route("/*").handler(JWTAuthHandler.create(jwtAuth, "/user/login"));
+
+        initRouter()
+
+        vertx.createHttpServer().requestHandler(router).listen(8080)
 
     }
 

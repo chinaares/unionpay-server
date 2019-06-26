@@ -2,6 +2,9 @@
 mongo:
   host: 127.0.0.1
 
-logging:
-  level:
-    org.mongodb.driver: debug
+#logging:
+#  level:
+#    org.mongodb.driver: debug
+
+jwt:
+  key: owari

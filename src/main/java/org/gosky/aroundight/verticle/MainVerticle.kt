@@ -1,7 +1,7 @@
 package org.gosky.aroundight.verticle
 
-import io.vertx.ext.web.RoutingContext
 import io.vertx.reactivex.ext.mongo.MongoClient
+import io.vertx.reactivex.ext.web.RoutingContext
 import mu.KotlinLogging
 import org.gosky.aroundight.ext.success
 import org.gosky.aroundight.service.OrderService
@@ -26,11 +26,10 @@ class MainVerticle : RestVerticle() {
     private lateinit var orderService: OrderService
 
     override fun initRouter() {
-        router.get("/health").handler { it.success("ok!") }
 
         router.post("/order").handler { createOrder(it) }
 
-        router.get("/order-list").handler { getOrderList(it) }
+        router.get("/order-list").handler(::getOrderList)
 
         router.put("/order/paid").handler { orderStatusPaid(it) }
     }

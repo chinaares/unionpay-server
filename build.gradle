@@ -41,6 +41,7 @@ dependencies {
     implementation 'io.vertx:vertx-rx-java2:3.7.1'
     implementation 'io.github.microutils:kotlin-logging:1.6.24'
     implementation "io.vertx:vertx-lang-kotlin:3.7.1"
+    implementation 'io.vertx:vertx-auth-jwt:3.7.1'
 }
 
 compileKotlin {
