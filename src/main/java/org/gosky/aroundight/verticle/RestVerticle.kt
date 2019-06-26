@@ -8,9 +8,11 @@ import io.vertx.reactivex.ext.web.handler.BodyHandler
 import io.vertx.reactivex.ext.web.handler.CorsHandler
 import io.vertx.reactivex.ext.web.handler.JWTAuthHandler
 import mu.KotlinLogging
+import org.gosky.aroundight.api.BaseApi
 import org.gosky.aroundight.ext.error
 import org.gosky.aroundight.ext.success
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
 
 /**
@@ -21,10 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired
 
 private val logger = KotlinLogging.logger {}
 
-
-abstract class RestVerticle : AbstractVerticle() {
+@Component
+class RestVerticle : AbstractVerticle() {
 
     protected lateinit var router: Router
+
+    @Autowired
+    private lateinit var apiList: List<BaseApi>
 
     @Autowired
     private lateinit var jwtAuth: JWTAuth
@@ -70,11 +75,11 @@ abstract class RestVerticle : AbstractVerticle() {
 
         router.route("/*").handler(JWTAuthHandler.create(jwtAuth, "/user/login"));
 
-        initRouter()
+        apiList.forEach { it.initRouter(router) }
 
         vertx.createHttpServer().requestHandler(router).listen(8080)
 
     }
 
-    protected abstract fun initRouter()
+
 }

@@ -1,5 +1,6 @@
-package org.gosky.aroundight.verticle
+package org.gosky.aroundight.api
 
+import io.vertx.reactivex.ext.web.Router
 import io.vertx.reactivex.ext.web.RoutingContext
 import mu.KotlinLogging
 import org.gosky.aroundight.ext.success
@@ -15,15 +16,13 @@ import org.springframework.stereotype.Component
 private val logger = KotlinLogging.logger {}
 
 @Component
-class UserVerticle : RestVerticle() {
+class UserApi : BaseApi {
 
     @Autowired
     private lateinit var userService: UserService
 
-    override fun initRouter() {
+    override fun initRouter(router: Router) {
         router.post("/user/login").handler(::login)
-        val arrayList = ArrayList<Any>()
-        arrayList.toList()
     }
 
     private fun login(context: RoutingContext) {
@@ -31,7 +30,7 @@ class UserVerticle : RestVerticle() {
         val password = context.bodyAsJson.getString("password")
         userService.login(username, password)
                 .subscribe { o ->
-                    context.success(o)
+                    context.success(mapOf("token" to o))
                 }
     }
 }

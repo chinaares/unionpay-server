@@ -4,8 +4,7 @@ import io.vertx.kotlin.ext.auth.jwt.jwtAuthOptionsOf
 import io.vertx.kotlin.ext.auth.pubSecKeyOptionsOf
 import io.vertx.reactivex.core.Vertx
 import io.vertx.reactivex.ext.auth.jwt.JWTAuth
-import org.gosky.aroundight.verticle.MainVerticle
-import org.gosky.aroundight.verticle.UserVerticle
+import org.gosky.aroundight.verticle.RestVerticle
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -20,14 +19,11 @@ class Application {
     private lateinit var vertx: Vertx
 
     @Autowired
-    private lateinit var apiVerticle: MainVerticle
-    @Autowired
-    private lateinit var userVerticle: UserVerticle
+    private lateinit var restVerticle: RestVerticle
 
     @PostConstruct
     fun deployVerticle() {
-        vertx.deployVerticle(apiVerticle)
-        vertx.deployVerticle(userVerticle)
+        vertx.deployVerticle(restVerticle)
     }
 
     @Bean

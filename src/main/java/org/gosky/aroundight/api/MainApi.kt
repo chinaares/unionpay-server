@@ -1,6 +1,7 @@
-package org.gosky.aroundight.verticle
+package org.gosky.aroundight.api
 
 import io.vertx.reactivex.ext.mongo.MongoClient
+import io.vertx.reactivex.ext.web.Router
 import io.vertx.reactivex.ext.web.RoutingContext
 import mu.KotlinLogging
 import org.gosky.aroundight.ext.success
@@ -17,7 +18,8 @@ import org.springframework.stereotype.Component
 private val logger = KotlinLogging.logger {}
 
 @Component
-class MainVerticle : RestVerticle() {
+class MainApi : BaseApi {
+
 
     @Autowired
     private lateinit var mongo: MongoClient
@@ -25,8 +27,7 @@ class MainVerticle : RestVerticle() {
     @Autowired
     private lateinit var orderService: OrderService
 
-    override fun initRouter() {
-
+    override fun initRouter(router: Router) {
         router.post("/order").handler { createOrder(it) }
 
         router.get("/order-list").handler(::getOrderList)
