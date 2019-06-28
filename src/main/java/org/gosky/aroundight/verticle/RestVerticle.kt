@@ -65,17 +65,16 @@ class RestVerticle : AbstractVerticle() {
         router.route().handler(CorsHandler.create("*").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods))
         router.route().handler(BodyHandler.create()) // <3>
 
-        router.errorHandler(500) { routerContext ->
-            logger.error { routerContext.failure().message }
-            routerContext.error("error" to routerContext.failure().message)
-        }
-
-
         router.get("/health").handler { it.success("ok!") }
 
         router.route("/*").handler(JWTAuthHandler.create(jwtAuth, "/user/login"));
 
         apiList.forEach { it.initRouter(router) }
+
+        router.errorHandler(500) { routerContext ->
+            logger.error { routerContext.failure().message }
+            routerContext.error("error" to routerContext.failure().message)
+        }
 
         vertx.createHttpServer().requestHandler(router).listen(8080)
 

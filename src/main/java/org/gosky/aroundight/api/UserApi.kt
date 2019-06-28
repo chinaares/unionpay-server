@@ -23,6 +23,7 @@ class UserApi : BaseApi {
 
     override fun initRouter(router: Router) {
         router.post("/user/login").handler(::login)
+        router.post("/user/password").handler(::modifyPassword)
     }
 
     private fun login(context: RoutingContext) {
@@ -32,5 +33,16 @@ class UserApi : BaseApi {
                 .subscribe { o ->
                     context.success(mapOf("token" to o))
                 }
+    }
+
+    private fun modifyPassword(context: RoutingContext) {
+        val principal = context.user().principal()
+        logger.info("user: {}", principal)
+        userService.modifyPassword(principal.getString("username"),
+                context.bodyAsJson.getString("password"))
+                .subscribe { t ->
+                    context.success(t)
+                }
+
     }
 }
